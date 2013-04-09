@@ -20,12 +20,6 @@ public class ShadowImageView extends ShadowView {
     private Matrix matrix;
     private int imageLevel;
 
-    @Override
-    public void applyAttributes() {
-        super.applyAttributes();
-        applyImageAttribute();
-    }
-
     @Implementation
     public void setImageBitmap(Bitmap imageBitmap) {
         setImageDrawable(new BitmapDrawable(imageBitmap));

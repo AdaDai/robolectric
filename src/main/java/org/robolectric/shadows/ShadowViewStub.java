@@ -21,13 +21,6 @@ public class ShadowViewStub extends ShadowView {
     private WeakReference<View> mInflatedViewRef;
     private ViewStub.OnInflateListener mInflateListener;
 
-    @Override public void applyAttributes() {
-        super.applyAttributes();
-
-        mInflatedId = attributeSet.getAttributeResourceValue("android", "inflatedId", 0);
-        mLayoutResource = attributeSet.getAttributeResourceValue("android", "layout", 0);
-    }
-
     @Implementation
     public int getInflatedId() {
         return mInflatedId;

@@ -23,19 +23,20 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import org.robolectric.internal.Implementation;
 import org.robolectric.internal.Implements;
+import org.robolectric.internal.RealObject;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.VISIBLE;
-import static org.robolectric.Robolectric.directlyOn;
-import static org.robolectric.Robolectric.shadowOf;
-import static org.robolectric.Robolectric.shadowOf_;
+import static org.robolectric.Robolectric.*;
 
 @SuppressWarnings({"UnusedDeclaration"})
-@Implements(value = TextView.class, inheritImplementationMethods = true)
+@Implements(value = TextView.class)
 public class ShadowTextView extends ShadowView {
+    @RealObject TextView realTextView;
+
     private CharSequence text = "";
     private TextView.BufferType bufferType = TextView.BufferType.NORMAL;
     private CompoundDrawables compoundDrawablesImpl = new CompoundDrawables(0, 0, 0, 0);
@@ -67,9 +68,7 @@ public class ShadowTextView extends ShadowView {
     private List<KeyEvent> previousKeyEvents = new ArrayList<KeyEvent>();
     private Layout layout;
 
-    @Override
     public void applyAttributes() {
-        super.applyAttributes();
         applyHintAttribute();
         applyTextAttribute();
         applyTextColorAttribute();
@@ -411,7 +410,7 @@ public class ShadowTextView extends ShadowView {
      */
     @Override
     public String innerText() {
-        return (text == null || getVisibility() != VISIBLE) ? "" : text.toString();
+        return (text == null || realView.getVisibility() != VISIBLE) ? "" : text.toString();
     }
 
     @Implementation
@@ -472,7 +471,7 @@ public class ShadowTextView extends ShadowView {
                 int textResId = attributeSet.getAttributeResourceValue("android", "text", 0);
                 text = realView.getResources().getString(textResId);
             }
-            setText(text);
+            realTextView.setText(text);
         }
     }
 

@@ -24,7 +24,7 @@ import org.robolectric.R;
 import org.robolectric.Robolectric;
 import org.robolectric.TestRunners;
 import org.robolectric.res.Attribute;
-import org.robolectric.res.EmptyResourceLoader;
+import org.robolectric.res.ResourceLoader;
 import org.robolectric.tester.android.view.RoboWindow;
 import org.robolectric.util.TestAnimationListener;
 import org.robolectric.util.TestOnClickListener;
@@ -111,9 +111,17 @@ public class ViewTest {
         transcript.assertNoEventsSoFar();
 
         view.requestFocus();
+        assertFalse(view.isFocused());
+        assertFalse(view.hasFocus());
+        transcript.assertNoEventsSoFar();
+
+        view.setFocusable(true);
+        view.requestFocus();
         assertTrue(view.isFocused());
         assertTrue(view.hasFocus());
         transcript.assertEventsSoFar("Gained focus");
+
+        shadowOf(view).setMyParent(new LinearLayout(application)); // we can never lose focus unless a parent can take it
 
         view.clearFocus();
         assertFalse(view.isFocused());
@@ -131,7 +139,10 @@ public class ViewTest {
 
     @Test
     public void shouldKnowIfThisOrAncestorsAreVisible() throws Exception {
-        assertTrue(view.isShown());
+        assertThat(view.isShown()).describedAs("view isn't considered shown unless it has a view root").isFalse();
+        shadowOf(view).setMyParent(new StubViewRoot());
+        assertThat(view.isShown()).isTrue();
+        shadowOf(view).setMyParent(null);
 
         ViewGroup parent = new LinearLayout(Robolectric.application);
         parent.addView(view);
@@ -147,7 +158,7 @@ public class ViewTest {
     @Test
     public void shouldInflateMergeRootedLayoutAndNotCreateReferentialLoops() throws Exception {
         LinearLayout root = new LinearLayout(Robolectric.application);
-        root.inflate(new Activity(), R.layout.inner_merge, root);
+        LinearLayout.inflate(new Activity(), R.layout.inner_merge, root);
         for (int i = 0; i < root.getChildCount(); i++) {
             View child = root.getChildAt(i);
             assertNotSame(root, child);
@@ -158,7 +169,7 @@ public class ViewTest {
     public void performLongClick_shouldClickOnView() throws Exception {
         TestOnLongClickListener clickListener = new TestOnLongClickListener();
         view.setOnLongClickListener(clickListener);
-        shadowOf(view).performLongClick();
+        view.performLongClick();
 
         assertTrue(clickListener.clicked);
     }
@@ -166,6 +177,7 @@ public class ViewTest {
     @Test
     public void checkedClick_shouldClickOnView() throws Exception {
         TestOnClickListener clickListener = new TestOnClickListener();
+        shadowOf(view).setMyParent(new StubViewRoot());
         view.setOnClickListener(clickListener);
         shadowOf(view).checkedPerformClick();
 
@@ -287,7 +299,8 @@ public class ViewTest {
 
     @Test
     public void shouldAddOnClickListenerFromAttribute() throws Exception {
-        RoboAttributeSet attrs = new RoboAttributeSet(new ArrayList<Attribute>(), new EmptyResourceLoader(), null);
+        ResourceLoader resourceLoader = shadowOf(application).getResourceLoader();
+        RoboAttributeSet attrs = new RoboAttributeSet(new ArrayList<Attribute>(), resourceLoader, null);
         attrs.put("android:attr/onClick", "clickMe", R.class.getPackage().getName());
 
         view = new View(Robolectric.application, attrs);
@@ -297,13 +310,9 @@ public class ViewTest {
     @Test
     public void shouldCallOnClickWithAttribute() throws Exception {
         final AtomicBoolean called = new AtomicBoolean(false);
-        Activity context = new Activity() {
-            @SuppressWarnings("UnusedDeclaration")
-            public void clickMe(View view) {
-                called.set(true);
-            }
-        };
-        RoboAttributeSet attrs = new RoboAttributeSet(new ArrayList<Attribute>(), new EmptyResourceLoader(), null);
+        Activity context = new MyActivity(called);
+        ResourceLoader resourceLoader = shadowOf(application).getResourceLoader();
+        RoboAttributeSet attrs = new RoboAttributeSet(new ArrayList<Attribute>(), resourceLoader, null);
         attrs.put("android:attr/onClick", "clickMe", R.class.getPackage().getName());
 
         view = new View(context, attrs);
@@ -358,17 +367,6 @@ public class ViewTest {
     }
 
     @Test
-    public void shouldFindViewWithTag_whenViewOverridesGetTag() throws Exception {
-        View view = new View(Robolectric.application) {
-            @Override
-            public Object getTag() {
-                return "blarg";
-            }
-        };
-        assertThat(view.findViewWithTag("blarg")).isSameAs(view);
-    }
-
-    @Test
     public void scrollTo_shouldStoreTheScrolledCoordinates() throws Exception {
         view.scrollTo(1, 2);
         assertThat(shadowOf(view).scrollToCoordinates).isEqualTo(new Point(1, 2));
@@ -406,29 +404,18 @@ public class ViewTest {
     }
 
     @Test
-    public void dispatchTouchEvent_listensToTrueFromListener() throws Exception {
-        view.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
-            }
-        });
-        MotionEvent event = MotionEvent.obtain(0L, 0L, MotionEvent.ACTION_DOWN, 12f, 34f, 0);
-        view.dispatchTouchEvent(event);
-        assertThat(shadowOf(view).getLastTouchEvent()).isNull();
-    }
-
-    @Test
     public void dispatchTouchEvent_listensToFalseFromListener() throws Exception {
+        final AtomicBoolean called = new AtomicBoolean(false);
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                return false;
+                called.set(true); return false;
             }
         });
         MotionEvent event = MotionEvent.obtain(0L, 0L, MotionEvent.ACTION_DOWN, 12f, 34f, 0);
         view.dispatchTouchEvent(event);
         assertThat(shadowOf(view).getLastTouchEvent()).isSameAs(event);
+        assertThat(called.get()).isTrue();
     }
 
     @Test
@@ -505,6 +492,7 @@ public class ViewTest {
 
     @Test
     public void itKnowsIfTheViewIsShown() {
+        shadowOf(view).setMyParent(new StubViewRoot()); // a view is only considered visible if it is added to a view root
         view.setVisibility(View.VISIBLE);
         assertThat(view.isShown()).isTrue();
     }
@@ -672,18 +660,18 @@ public class ViewTest {
     }
 
     @Test public void shouldCallOnAttachedToAndDetachedFromWindow() throws Exception {
-        MyView parent = new MyView("parent");
-        parent.addView(new MyView("child"));
+        MyView parent = new MyView("parent", transcript);
+        parent.addView(new MyView("child", transcript));
         transcript.assertNoEventsSoFar();
 
         RoboWindow window = new RoboWindow(application);
         window.setContentView(parent);
         transcript.assertEventsSoFar("parent attached", "child attached");
 
-        parent.addView(new MyView("another child"));
+        parent.addView(new MyView("another child", transcript));
         transcript.assertEventsSoFar("another child attached");
 
-        MyView temporaryChild = new MyView("temporary child");
+        MyView temporaryChild = new MyView("temporary child", transcript);
         parent.addView(temporaryChild);
         transcript.assertEventsSoFar("temporary child attached");
         assertTrue(shadowOf(temporaryChild).isAttachedToWindow());
@@ -697,21 +685,36 @@ public class ViewTest {
     }
 
     @Test public void removeAllViews_shouldCallOnAttachedToAndDetachedFromWindow() throws Exception {
-        MyView parent = new MyView("parent");
-        parent.addView(new MyView("child"));
-        parent.addView(new MyView("another child"));
+        MyView parent = new MyView("parent", transcript);
+        parent.addView(new MyView("child", transcript));
+        parent.addView(new MyView("another child", transcript));
         new RoboWindow(application).setContentView(parent);
         transcript.clear();
         parent.removeAllViews();
         transcript.assertEventsSoFar("another child detached", "child detached");
     }
 
-    private class MyView extends LinearLayout {
-        private String name;
+    public static class MyActivity extends Activity {
+        private final AtomicBoolean called;
 
-        public MyView(String name) {
+        public MyActivity(AtomicBoolean called) {
+            this.called = called;
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        public void clickMe(View view) {
+            called.set(true);
+        }
+    }
+
+    public static class MyView extends LinearLayout {
+        private String name;
+        private Transcript transcript;
+
+        public MyView(String name, Transcript transcript) {
             super(Robolectric.application);
             this.name = name;
+            this.transcript = transcript;
         }
 
         @Override protected void onAttachedToWindow() {

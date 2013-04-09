@@ -11,4 +11,8 @@ public class ShadowViewRootImpl {
     public static Object getWindowSession(Looper mainLooper) {
         return null;
     }
+
+    @Implementation
+    public void playSoundEffect(int effectId) {
+    }
 }

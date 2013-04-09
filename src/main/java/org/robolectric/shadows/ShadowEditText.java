@@ -22,12 +22,6 @@ public class ShadowEditText extends ShadowTextView {
     }
 
     @Override
-    public void applyAttributes() {
-        super.applyAttributes();
-        maxLength = attributeSet.getAttributeIntValue("android", "maxLength", Integer.MAX_VALUE);
-    }
-
-    @Override
     @Implementation(i18nSafe = true)
     public void setText(CharSequence str) {
         if (!TextUtils.isEmpty(str) && str.length() > maxLength) {

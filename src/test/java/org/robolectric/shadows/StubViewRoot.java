@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 
-class StubViewParent implements ViewParent {
+public class StubViewRoot implements ViewParent {
 
     @Override public void requestLayout() {
     }

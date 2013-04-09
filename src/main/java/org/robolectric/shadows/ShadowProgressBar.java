@@ -12,16 +12,6 @@ public class ShadowProgressBar extends ShadowView {
     private int max = 100;
     private boolean isIndeterminate;
 
-    @Override
-    public void applyAttributes() {
-        super.applyAttributes();
-
-        final int max = attributeSet.getAttributeIntValue("android", "max", this.max);
-
-        if (max >= 0)
-            setMax(max);
-    }
-
     @Implementation
     public void setMax(int max) {
         this.max = max;

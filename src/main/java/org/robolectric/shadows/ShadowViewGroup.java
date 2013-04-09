@@ -172,31 +172,31 @@ public class ShadowViewGroup extends ShadowView {
 //        requestLayout();
 //    }
 
-    @Override
-    @Implementation
-    public boolean hasFocus() {
-        if (super.hasFocus()) return true;
-
-        for (int i = 0; i < realViewGroup.getChildCount(); i++) {
-            View child = realViewGroup.getChildAt(i);
-            if (child.hasFocus()) return true;
-        }
-
-        return false;
-    }
-
-    @Implementation
-    @Override
-    public void clearFocus() {
-        if (hasFocus()) {
-            super.clearFocus();
-
-            for (int i = 0; i < realViewGroup.getChildCount(); i++) {
-                View child = realViewGroup.getChildAt(i);
-                child.clearFocus();
-            }
-        }
-    }
+//    @Override
+//    @Implementation
+//    public boolean hasFocus() {
+//        if (super.hasFocus()) return true;
+//
+//        for (int i = 0; i < realViewGroup.getChildCount(); i++) {
+//            View child = realViewGroup.getChildAt(i);
+//            if (child.hasFocus()) return true;
+//        }
+//
+//        return false;
+//    }
+//
+//    @Implementation
+//    @Override
+//    public void clearFocus() {
+//        if (hasFocus()) {
+//            super.clearFocus();
+//
+//            for (int i = 0; i < realViewGroup.getChildCount(); i++) {
+//                View child = realViewGroup.getChildAt(i);
+//                child.clearFocus();
+//            }
+//        }
+//    }
 
 //    @Implementation
 //    public void setOnHierarchyChangeListener(ViewGroup.OnHierarchyChangeListener onHierarchyChangeListener) {

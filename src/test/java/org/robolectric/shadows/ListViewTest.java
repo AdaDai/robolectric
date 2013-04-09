@@ -349,7 +349,7 @@ public class ListViewTest {
     public void getPositionForView_shouldReturnInvalidPositionForViewThatIsNotFound() throws Exception {
         prepareWithListAdapter();
         View view = new View(Robolectric.application);
-        shadowOf(view).setMyParent(new StubViewParent()); // Android implementation requires the item have a parent
+        shadowOf(view).setMyParent(new StubViewRoot()); // Android implementation requires the item have a parent
         assertThat(listView.getPositionForView(view)).isEqualTo(AdapterView.INVALID_POSITION);
     }
 

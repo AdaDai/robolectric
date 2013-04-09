@@ -21,10 +21,10 @@ public class ShadowCheckedTextView extends ShadowTextView {
         return checked;
     }
 
-    @Implementation @Override
+    @Implementation
     public boolean performClick() {
         realCheckedTextView.toggle();
-        return super.performClick();
+        return realView.performClick();
     }
 
     @Implementation
