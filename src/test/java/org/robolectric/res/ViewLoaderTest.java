@@ -3,6 +3,7 @@ package org.robolectric.res;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -29,7 +30,6 @@ import org.robolectric.TestRunners;
 import org.robolectric.annotation.Config;
 import org.robolectric.res.builder.LayoutBuilder;
 import org.robolectric.shadows.ShadowImageView;
-import org.robolectric.shadows.ShadowTextView;
 import org.robolectric.util.CustomView;
 import org.robolectric.util.CustomView2;
 import org.robolectric.util.I18nException;
@@ -235,12 +235,12 @@ public class ViewLoaderTest {
     @Test
     public void testTextViewCompoundDrawablesAreSet() throws Exception {
         View mediaView = inflate("main");
-        ShadowTextView shadowTextView = shadowOf((TextView) mediaView.findViewById(R.id.title));
+        TextView view = (TextView) mediaView.findViewById(R.id.title);
 
-        assertThat(shadowTextView.getCompoundDrawablesImpl().getTop()).isEqualTo(R.drawable.an_image);
-        assertThat(shadowTextView.getCompoundDrawablesImpl().getRight()).isEqualTo(R.drawable.an_other_image);
-        assertThat(shadowTextView.getCompoundDrawablesImpl().getBottom()).isEqualTo(R.drawable.third_image);
-        assertThat(shadowTextView.getCompoundDrawablesImpl().getLeft()).isEqualTo(R.drawable.fourth_image);
+        assertThat(view.getCompoundDrawables()[0]).isEqualTo(drawable(R.drawable.fourth_image));
+        assertThat(view.getCompoundDrawables()[1]).isEqualTo(drawable(R.drawable.an_image));
+        assertThat(view.getCompoundDrawables()[2]).isEqualTo(drawable(R.drawable.an_other_image));
+        assertThat(view.getCompoundDrawables()[3]).isEqualTo(drawable(R.drawable.third_image));
     }
 
     @Test
@@ -419,6 +419,10 @@ public class ViewLoaderTest {
 
     private View inflate(String layoutName, String qualifiers) {
         return inflate(TEST_PACKAGE, layoutName, qualifiers);
+    }
+
+    private Drawable drawable(int id) {
+        return context.getResources().getDrawable(id);
     }
 
     public static class ClickActivity extends FragmentActivity {

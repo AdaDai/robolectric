@@ -14,7 +14,7 @@ import static org.robolectric.Robolectric.directlyOn;
  * Keeps track of whether or not its "checked" state is set and deals with listeners in an appropriate way.
  */
 @SuppressWarnings({"UnusedDeclaration"})
-@Implements(value = CompoundButton.class, inheritImplementationMethods = true)
+@Implements(value = CompoundButton.class)
 public class ShadowCompoundButton extends ShadowTextView implements Checkable {
     @RealObject CompoundButton realCompoundButton;
     private boolean checked;

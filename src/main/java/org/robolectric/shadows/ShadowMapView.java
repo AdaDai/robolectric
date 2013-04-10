@@ -22,7 +22,7 @@ import static org.robolectric.RobolectricForMaps.shadowOf;
  * {@code Overlay}s, and {@code TouchEvent}s
  */
 @SuppressWarnings({"UnusedDeclaration"})
-@Implements(value = MapView.class, inheritImplementationMethods = true)
+@Implements(value = MapView.class)
 public class ShadowMapView extends ShadowViewGroup {
     private boolean satelliteOn;
     private MapController mapController;

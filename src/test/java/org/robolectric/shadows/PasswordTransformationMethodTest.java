@@ -1,5 +1,6 @@
 package org.robolectric.shadows;
 
+import android.text.method.PasswordTransformationMethod;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,11 +11,11 @@ import static org.fest.assertions.api.Assertions.assertThat;
 @RunWith(TestRunners.WithDefaults.class)
 public class PasswordTransformationMethodTest {
 
-    private ShadowPasswordTransformationMethod transformationMethod;
+    private PasswordTransformationMethod transformationMethod;
 
     @Before
     public void setUp(){
-        transformationMethod = new ShadowPasswordTransformationMethod();
+        transformationMethod = new PasswordTransformationMethod();
     }
 
     @Test
@@ -49,6 +50,6 @@ public class PasswordTransformationMethodTest {
 
     @Test
     public void shouldRetrieveAnInstance() {
-        assertThat(ShadowPasswordTransformationMethod.getInstance()).isNotNull();
+        assertThat(PasswordTransformationMethod.getInstance()).isNotNull();
     }
 }

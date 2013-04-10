@@ -69,9 +69,8 @@ public class EditTextTest {
 
         editText.selectAll();
 
-        ShadowTextView shadowTextView = Robolectric.shadowOf(editText);
-        assertThat(shadowTextView.getSelectionStart()).isEqualTo(0);
-        assertThat(shadowTextView.getSelectionEnd()).isEqualTo(2);
+        assertThat(editText.getSelectionStart()).isEqualTo(0);
+        assertThat(editText.getSelectionEnd()).isEqualTo(2);
     }
 
     private String anyString() {

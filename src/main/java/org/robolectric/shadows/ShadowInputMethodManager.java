@@ -8,7 +8,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.internal.Implementation;
 import org.robolectric.internal.Implements;
 
-@Implements(InputMethodManager.class)
+@Implements(value = InputMethodManager.class, callThroughByDefault = false)
 public class ShadowInputMethodManager {
 
     private boolean softInputVisible;
@@ -18,9 +18,9 @@ public class ShadowInputMethodManager {
         return Robolectric.newInstanceOf(InputMethodManager.class);
     }
 
-    @Implementation
-    public void focusIn(View view) {
-    }
+//    @Implementation
+//    public void focusIn(View view) {
+//    }
 
     @Implementation
     public boolean showSoftInput(View view, int flags) {

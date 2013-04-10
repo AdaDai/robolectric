@@ -3,7 +3,7 @@ package org.robolectric.shadows;
 import android.widget.ExpandableListView;
 import org.robolectric.internal.Implements;
 
-@Implements(value = ExpandableListView.class, inheritImplementationMethods = true)
+@Implements(value = ExpandableListView.class)
 public class ShadowExpandableListView extends ShadowListView {
 //    @RealObject private ExpandableListView mExpandable;
 //    private OnChildClickListener mChildClickListener;

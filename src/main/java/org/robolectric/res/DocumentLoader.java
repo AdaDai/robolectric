@@ -27,13 +27,16 @@ public class DocumentLoader {
     }
 
     public void loadResourceXmlSubDirs(ResourcePath resourcePath, final String folderBaseName) throws Exception {
+        long startTime = System.currentTimeMillis();
         File[] files = resourcePath.resourceBase.listFiles(new DirectoryMatchingFileFilter(folderBaseName));
         if (files == null) {
             throw new RuntimeException(resourcePath.resourceBase + " is not a directory");
         }
         for (File dir : files) {
+//            if (dir.getName().contains("-")) continue; // todo: not this!~!!!!!
             loadResourceXmlDir(resourcePath, dir);
         }
+        System.out.println("loaded from " + folderBaseName + " in " + (System.currentTimeMillis() - startTime));
     }
 
     public void loadResourceXmlDir(ResourcePath resourcePath, String dirName) throws Exception {

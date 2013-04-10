@@ -70,8 +70,8 @@ public class AlertDialogTest {
         builder.setPositiveButton("OK", null);
         AlertDialog dialog = builder.create();
         dialog.show();
-        assertThat(shadowOf(dialog).getButton(AlertDialog.BUTTON_POSITIVE)).isNotNull();
-        assertThat(shadowOf(dialog).getButton(AlertDialog.BUTTON_NEGATIVE)).isNull();
+        assertThat(dialog.getButton(AlertDialog.BUTTON_POSITIVE)).isNotNull();
+        assertThat(dialog.getButton(AlertDialog.BUTTON_NEGATIVE)).isNull();
     }
 
     @Test
@@ -92,10 +92,10 @@ public class AlertDialogTest {
         ShadowAlertDialog shadowAlertDialog = shadowOf(alert);
         assertThat(shadowAlertDialog.getMessage()).isEqualTo("message");
 
-        shadowAlertDialog.setMessage("new message");
+        alert.setMessage("new message");
         assertThat(shadowAlertDialog.getMessage()).isEqualTo("new message");
 
-        shadowAlertDialog.setMessage(null);
+        alert.setMessage(null);
         assertThat(shadowAlertDialog.getMessage()).isNull();
     }
 
@@ -137,7 +137,7 @@ public class AlertDialogTest {
         TestDialogOnClickListener listener = new TestDialogOnClickListener();
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "More Positive", listener);
         
-        final Button positiveButton = shadowOf(alertDialog).getButton(AlertDialog.BUTTON_POSITIVE);
+        final Button positiveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
         positiveButton.performClick();
 
         assertThat(positiveButton.getText().toString()).isEqualTo("More Positive");
@@ -152,7 +152,7 @@ public class AlertDialogTest {
         TestDialogOnClickListener listener = new TestDialogOnClickListener();
         alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "More Negative", listener);
         
-        final Button negativeButton = shadowOf(alertDialog).getButton(AlertDialog.BUTTON_NEGATIVE);
+        final Button negativeButton = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
         negativeButton.performClick();
 
         assertThat(negativeButton.getText().toString()).isEqualTo("More Negative");
@@ -167,7 +167,7 @@ public class AlertDialogTest {
         TestDialogOnClickListener listener = new TestDialogOnClickListener();
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Still Neutral", listener);
         
-        final Button neutralButton = shadowOf(alertDialog).getButton(AlertDialog.BUTTON_NEUTRAL);
+        final Button neutralButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
         neutralButton.performClick();
 
         assertThat(neutralButton.getText().toString()).isEqualTo("Still Neutral");

@@ -10,7 +10,7 @@ import org.robolectric.internal.Implements;
  * Shadows the {@code android.widget.RadioButton} class.
  */
 @SuppressWarnings({"UnusedDeclaration"})
-@Implements(value = RadioButton.class, inheritImplementationMethods = true)
+@Implements(value = RadioButton.class)
 public class ShadowRadioButton extends ShadowCompoundButton {
 
     @Implementation

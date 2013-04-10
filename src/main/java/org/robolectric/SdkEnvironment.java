@@ -3,9 +3,9 @@ package org.robolectric;
 import org.robolectric.bytecode.ClassHandler;
 import org.robolectric.bytecode.ShadowMap;
 import org.robolectric.bytecode.ShadowWrangler;
-import org.robolectric.res.AndroidSdkFinder;
 import org.robolectric.res.ResourcePath;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,8 +27,11 @@ public class SdkEnvironment {
 
     public synchronized ResourcePath getSystemResourcePath() {
         if (systemResourcePath == null) {
-            int targetSdkVersion = RobolectricTestRunner.getTargetVersionWhenAppManifestMightBeNullWhaaa(appManifest);
-            systemResourcePath = new AndroidSdkFinder().findSystemResourcePath(targetSdkVersion);
+            systemResourcePath = new ResourcePath(android.R.class,
+                    new File("/Volumes/android/frameworks/base/core/res/res"),
+                    new File("/Volumes/android/frameworks/base/core/res/assets"));
+//            int targetSdkVersion = RobolectricTestRunner.getTargetVersionWhenAppManifestMightBeNullWhaaa(appManifest);
+//            systemResourcePath = new AndroidSdkFinder().findSystemResourcePath(targetSdkVersion);
         }
         return systemResourcePath;
     }

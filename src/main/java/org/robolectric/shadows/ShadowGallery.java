@@ -6,7 +6,7 @@ import org.robolectric.internal.Implementation;
 import org.robolectric.internal.Implements;
 import org.robolectric.internal.RealObject;
 
-@Implements(value = Gallery.class, inheritImplementationMethods = true)
+@Implements(value = Gallery.class)
 public class ShadowGallery extends ShadowAbsSpinner {
 
     @RealObject Gallery gallery;

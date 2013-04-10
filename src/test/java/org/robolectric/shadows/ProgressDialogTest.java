@@ -57,21 +57,17 @@ public class ProgressDialogTest {
     @Test
     public void shouldSetMax() {
         assertThat(dialog.getMax()).isEqualTo(0);
-        assertThat(shadow.getMax()).isEqualTo(0);
 
         dialog.setMax(41);
         assertThat(dialog.getMax()).isEqualTo(41);
-        assertThat(shadow.getMax()).isEqualTo(41);
     }
 
     @Test
     public void shouldSetProgress() {
         assertThat(dialog.getProgress()).isEqualTo(0);
-        assertThat(shadow.getProgress()).isEqualTo(0);
 
         dialog.setProgress(42);
         assertThat(dialog.getProgress()).isEqualTo(42);
-        assertThat(shadow.getProgress()).isEqualTo(42);
     }
 
     @Test
@@ -80,9 +76,9 @@ public class ProgressDialogTest {
         TestOnCancelListener cancelListener = new TestOnCancelListener();
         ProgressDialog progressDialog = ProgressDialog.show(context, "Title", "Message", true, true, cancelListener);
         ShadowProgressDialog shadowProgressDialog = shadowOf(progressDialog);
-        assertThat(shadowProgressDialog.getContext()).isSameAs(context);
+        assertThat(progressDialog.getContext()).isSameAs(context);
         assertThat(shadowProgressDialog.getMessage()).isEqualTo("Message");
-        assertTrue(shadowProgressDialog.isIndeterminate());
+        assertTrue(progressDialog.isIndeterminate());
         assertTrue(shadowProgressDialog.isCancelable());
 
         progressDialog.cancel();

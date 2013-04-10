@@ -282,4 +282,7 @@ public class RoboWindow extends Window {
     public boolean superDispatchKeyShortcutEvent(KeyEvent event) {
         return false;
     }
+
+    public void alwaysReadCloseOnTouchAttr() {
+    }
 }

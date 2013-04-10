@@ -6,7 +6,7 @@ import org.robolectric.internal.Implementation;
 import org.robolectric.internal.Implements;
 import org.robolectric.internal.RealObject;
 
-@Implements(value = RatingBar.class, inheritImplementationMethods = true)
+@Implements(value = RatingBar.class)
 public class ShadowRatingBar extends ShadowAbsSeekBar {
 
     @RealObject

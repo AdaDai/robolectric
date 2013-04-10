@@ -54,6 +54,11 @@ public final class ShadowAssetManager {
     public void ensureStringBlocks() {
     }
 
+    @HiddenApi @Implementation
+    public final int createTheme() {
+        return 1;
+    }
+
     public File getAssetsDirectory() {
         return appManifest.getAssetsDirectory();
     }
